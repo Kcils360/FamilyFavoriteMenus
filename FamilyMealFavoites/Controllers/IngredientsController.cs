@@ -10,85 +10,85 @@ using FamilyMealFavoites.Models;
 
 namespace FamilyMealFavoites.Controllers
 {
-    public class UsersController : Controller
+    public class IngredientsController : Controller
     {
         private readonly FamilyFavoritesDbContext _context;
 
-        public UsersController(FamilyFavoritesDbContext context)
+        public IngredientsController(FamilyFavoritesDbContext context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Ingredients
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            return View(await _context.Ingredients.ToListAsync());
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Ingredients/Details/5
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.AccountId == id);
-            if (user == null)
+            var ingredient = await _context.Ingredients
+                .FirstOrDefaultAsync(m => m.IngredientType == id);
+            if (ingredient == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(ingredient);
         }
 
-        // GET: Users/Create
+        // GET: Ingredients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Ingredients/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,AccountId,FirstName,Lastname,UserName,Password")] User user)
+        public async Task<IActionResult> Create([Bind("IngredientType")] Ingredient ingredient)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                _context.Add(ingredient);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(ingredient);
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Ingredients/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var ingredient = await _context.Ingredients.FindAsync(id);
+            if (ingredient == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(ingredient);
         }
 
-        // POST: Users/Edit/5
+        // POST: Ingredients/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,AccountId,FirstName,Lastname,UserName,Password")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("IngredientType")] Ingredient ingredient)
         {
-            if (id != user.AccountId)
+            if (id != ingredient.IngredientType)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace FamilyMealFavoites.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(ingredient);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.AccountId))
+                    if (!IngredientExists(ingredient.IngredientType))
                     {
                         return NotFound();
                     }
@@ -113,41 +113,41 @@ namespace FamilyMealFavoites.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(ingredient);
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Ingredients/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.AccountId == id);
-            if (user == null)
+            var ingredient = await _context.Ingredients
+                .FirstOrDefaultAsync(m => m.IngredientType == id);
+            if (ingredient == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(ingredient);
         }
 
-        // POST: Users/Delete/5
+        // POST: Ingredients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _context.User.FindAsync(id);
-            _context.User.Remove(user);
+            var ingredient = await _context.Ingredients.FindAsync(id);
+            _context.Ingredients.Remove(ingredient);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool IngredientExists(string id)
         {
-            return _context.User.Any(e => e.AccountId == id);
+            return _context.Ingredients.Any(e => e.IngredientType == id);
         }
     }
 }

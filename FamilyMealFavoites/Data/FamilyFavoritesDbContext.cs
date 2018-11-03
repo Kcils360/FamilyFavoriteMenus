@@ -16,13 +16,13 @@ namespace FamilyMealFavoites.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(
-                u => new { u.AccountId });
+                u => new { u.AccountID });
 
             modelBuilder.Entity<AccountMenu>().HasKey(
                 a => new { a.MenuID, a.AccountID });
 
             modelBuilder.Entity<MenuRating>().HasKey(
-                m => new { m.MenuId, m.UserId });
+                m => new { m.MenuID, m.UserID });
 
         }
         public DbSet<Account> Account { get; set; }

@@ -9,13 +9,13 @@ namespace FamilyMealFavoites.Models
     public class User
     {
         public int UserId { get; set; }
-        public int AccountId { get; set; }
+        public int AccountID { get; set; }
         public string FirstName { get; set; }
         public string Lastname { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
 
         //navigation properties
-        public Account Account { get; set; }
+        //public int AccountID { get; set; }
     }
 }
