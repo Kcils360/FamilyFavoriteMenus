@@ -16,6 +16,6 @@ namespace FamilyMealFavoites.Models
         public string Password { get; set; }
 
         //navigation properties
-        //public Account Account { get; set; }
+        public Account Account { get; set; }
     }
 }
