@@ -12,7 +12,8 @@ namespace FamilyMealFavoites.Migrations
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AccountNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,12 +62,14 @@ namespace FamilyMealFavoites.Migrations
                 name: "Ingredients",
                 columns: table => new
                 {
-                    IngredientType = table.Column<string>(nullable: false),
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IngredientType = table.Column<string>(nullable: true),
                     MenuID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ingredients", x => x.IngredientType);
+                    table.PrimaryKey("PK_Ingredients", x => x.ID);
                     table.ForeignKey(
                         name: "FK_Ingredients_Menu_MenuID",
                         column: x => x.MenuID,
@@ -76,31 +79,30 @@ namespace FamilyMealFavoites.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Members",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    AccountId = table.Column<int>(nullable: false)
+                    MemberID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FirstName = table.Column<string>(nullable: true),
                     Lastname = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    AccountID = table.Column<int>(nullable: true),
+                    AccountNumber = table.Column<int>(nullable: false),
                     AccountMenuAccountID = table.Column<int>(nullable: true),
                     AccountMenuMenuID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.AccountId);
+                    table.PrimaryKey("PK_Members", x => x.MemberID);
                     table.ForeignKey(
-                        name: "FK_User_Account_AccountID",
-                        column: x => x.AccountID,
+                        name: "FK_Members_Account_AccountNumber",
+                        column: x => x.AccountNumber,
                         principalTable: "Account",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_User_AccountMenus_AccountMenuMenuID_AccountMenuAccountID",
+                        name: "FK_Members_AccountMenus_AccountMenuMenuID_AccountMenuAccountID",
                         columns: x => new { x.AccountMenuMenuID, x.AccountMenuAccountID },
                         principalTable: "AccountMenus",
                         principalColumns: new[] { "MenuID", "AccountID" },
@@ -111,24 +113,25 @@ namespace FamilyMealFavoites.Migrations
                 name: "MenuRatings",
                 columns: table => new
                 {
-                    MenuId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    Rating = table.Column<int>(nullable: false)
+                    MenuID = table.Column<int>(nullable: false),
+                    MemeberID = table.Column<int>(nullable: false),
+                    Rating = table.Column<int>(nullable: false),
+                    MemberID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MenuRatings", x => new { x.MenuId, x.UserId });
+                    table.PrimaryKey("PK_MenuRatings", x => new { x.MenuID, x.MemeberID });
                     table.ForeignKey(
-                        name: "FK_MenuRatings_Menu_MenuId",
-                        column: x => x.MenuId,
+                        name: "FK_MenuRatings_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "MemberID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MenuRatings_Menu_MenuID",
+                        column: x => x.MenuID,
                         principalTable: "Menu",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MenuRatings_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "AccountId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -143,19 +146,19 @@ namespace FamilyMealFavoites.Migrations
                 column: "MenuID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MenuRatings_UserId",
-                table: "MenuRatings",
-                column: "UserId");
+                name: "IX_Members_AccountNumber",
+                table: "Members",
+                column: "AccountNumber");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_AccountID",
-                table: "User",
-                column: "AccountID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_AccountMenuMenuID_AccountMenuAccountID",
-                table: "User",
+                name: "IX_Members_AccountMenuMenuID_AccountMenuAccountID",
+                table: "Members",
                 columns: new[] { "AccountMenuMenuID", "AccountMenuAccountID" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuRatings_MemberID",
+                table: "MenuRatings",
+                column: "MemberID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -167,7 +170,7 @@ namespace FamilyMealFavoites.Migrations
                 name: "MenuRatings");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Members");
 
             migrationBuilder.DropTable(
                 name: "AccountMenus");

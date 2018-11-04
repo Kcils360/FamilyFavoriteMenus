@@ -8,5 +8,6 @@ namespace FamilyMealFavoites.Models
     public class Account
     {
         public int ID { get; set; }
+        public int AccountNumber { get; set; }
     }
 }

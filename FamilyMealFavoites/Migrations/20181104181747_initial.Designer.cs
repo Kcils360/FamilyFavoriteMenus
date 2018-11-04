@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyMealFavoites.Migrations
 {
     [DbContext(typeof(FamilyFavoritesDbContext))]
-    [Migration("20181103232159_second")]
-    partial class second
+    [Migration("20181104181747_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,8 @@ namespace FamilyMealFavoites.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccountNumber");
 
                     b.HasKey("ID");
 
@@ -47,16 +49,48 @@ namespace FamilyMealFavoites.Migrations
 
             modelBuilder.Entity("FamilyMealFavoites.Models.Ingredient", b =>
                 {
-                    b.Property<string>("IngredientType")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("IngredientType");
 
                     b.Property<int?>("MenuID");
 
-                    b.HasKey("IngredientType");
+                    b.HasKey("ID");
 
                     b.HasIndex("MenuID");
 
                     b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("FamilyMealFavoites.Models.Member", b =>
+                {
+                    b.Property<int>("MemberID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AccountMenuAccountID");
+
+                    b.Property<int?>("AccountMenuMenuID");
+
+                    b.Property<int>("AccountNumber");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("Lastname");
+
+                    b.Property<string>("Password");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("MemberID");
+
+                    b.HasIndex("AccountNumber");
+
+                    b.HasIndex("AccountMenuMenuID", "AccountMenuAccountID");
+
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("FamilyMealFavoites.Models.Menu", b =>
@@ -78,42 +112,17 @@ namespace FamilyMealFavoites.Migrations
                 {
                     b.Property<int>("MenuID");
 
-                    b.Property<int>("UserID");
+                    b.Property<int>("MemeberID");
+
+                    b.Property<int?>("MemberID");
 
                     b.Property<int>("Rating");
 
-                    b.HasKey("MenuID", "UserID");
+                    b.HasKey("MenuID", "MemeberID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("MemberID");
 
                     b.ToTable("MenuRatings");
-                });
-
-            modelBuilder.Entity("FamilyMealFavoites.Models.User", b =>
-                {
-                    b.Property<int>("AccountID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AccountMenuAccountID");
-
-                    b.Property<int?>("AccountMenuMenuID");
-
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("Lastname");
-
-                    b.Property<string>("Password");
-
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("AccountID");
-
-                    b.HasIndex("AccountMenuMenuID", "AccountMenuAccountID");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("FamilyMealFavoites.Models.AccountMenu", b =>
@@ -136,24 +145,28 @@ namespace FamilyMealFavoites.Migrations
                         .HasForeignKey("MenuID");
                 });
 
+            modelBuilder.Entity("FamilyMealFavoites.Models.Member", b =>
+                {
+                    b.HasOne("FamilyMealFavoites.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountNumber")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FamilyMealFavoites.Models.AccountMenu")
+                        .WithMany("Members")
+                        .HasForeignKey("AccountMenuMenuID", "AccountMenuAccountID");
+                });
+
             modelBuilder.Entity("FamilyMealFavoites.Models.MenuRating", b =>
                 {
+                    b.HasOne("FamilyMealFavoites.Models.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberID");
+
                     b.HasOne("FamilyMealFavoites.Models.Menu", "Menu")
                         .WithMany()
                         .HasForeignKey("MenuID")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FamilyMealFavoites.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("FamilyMealFavoites.Models.User", b =>
-                {
-                    b.HasOne("FamilyMealFavoites.Models.AccountMenu")
-                        .WithMany("Users")
-                        .HasForeignKey("AccountMenuMenuID", "AccountMenuAccountID");
                 });
 #pragma warning restore 612, 618
         }

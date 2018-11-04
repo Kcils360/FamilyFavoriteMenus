@@ -8,7 +8,7 @@ namespace FamilyMealFavoites.Models
 {
     public class Ingredient
     {
-        [Key]
+        public int ID { get; set; }
         public string IngredientType { get; set; }
     }
 }

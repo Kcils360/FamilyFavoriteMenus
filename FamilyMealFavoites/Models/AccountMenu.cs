@@ -13,7 +13,7 @@ namespace FamilyMealFavoites.Models
         //navigation properties
         public Menu Menu { get; set; }
         public Account Account { get; set; }
-        public ICollection<User> Users { get; set; }
+        public ICollection<Member> Members { get; set; }
 
 
     }

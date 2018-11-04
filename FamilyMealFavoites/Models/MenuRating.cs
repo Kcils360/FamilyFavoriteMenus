@@ -8,10 +8,10 @@ namespace FamilyMealFavoites.Models
     public class MenuRating
     {
         public int MenuID { get; set; }
-        public int UserID { get; set; }
+        public int MemeberID { get; set; }
         public int Rating { get; set; }
 
-        public User User { get; set; }
+        public Member Member { get; set; }
         public Menu Menu { get; set; }
 
     }
